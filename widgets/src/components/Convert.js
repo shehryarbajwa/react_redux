@@ -1,27 +1,47 @@
-import React, {useState, useEffect} from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-//Axios second object is for the body of the Post request
-//Axios third object is the query params
-const Convert = ({language, text}) => {
-    const [translated, setTranslated] = useState('')
+const Convert = ({ language, text }) => {
+  const [translated, setTranslated] = useState("");
+  const [debouncedText, setDebouncedText] = useState(text);
 
+  //Reducing the number of API calls
 
-    useEffect(() => {
-        const doTranslation = async () => {
-            const {data} = axios.post('https://translation.googleapis.com/language/translate/v2', {}, {
-                params: {
-                    q: text,
-                    target: language.value,
-                    key: 'AIzaSyCHUCmpR7cT_yDFHC98CZJy2LTms-IwDlM'
-                }
-            });
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedText(text);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [text]);
+
+  useEffect(() => {
+    const doTranslation = async () => {
+      const { data } = await axios.post(
+        "https://translation.googleapis.com/language/translate/v2",
+        {},
+        {
+          params: {
+            q: debouncedText,
+            target: language.value,
+            key: "AIzaSyCHUCmpR7cT_yDFHC98CZJy2LTms-IwDlM",
+          },
         }
+      );
 
-    }, [language, text])
+      setTranslated(data.data.translations[0].translatedText);
+    };
 
+    doTranslation();
+  }, [language, debouncedText]);
 
-    return <div>Hello</div>
-}
+  return (
+    <div>
+      <h1 className="ui header">{translated}</h1>
+    </div>
+  );
+};
 
 export default Convert;
