@@ -38,7 +38,7 @@ const options = [
 //Pass down a function callback as props to a component
 
 const App = () => {
-  const [selected, setSelected] = useState(options[0])
+  const [selected, setSelected] = useState(options[0]);
   return (
     <div>
       <Header />
@@ -50,10 +50,10 @@ const App = () => {
       </Route>
       <Route path="/dropdown">
         <Dropdown
-        label="Select a color"
-        options={options}
-        selected={selected}
-        onSelectedChange={setSelected}
+          label="Select a color"
+          options={options}
+          selected={selected}
+          onSelectedChange={setSelected}
         />
       </Route>
       <Route path="/translate">
